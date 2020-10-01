@@ -18,4 +18,16 @@ router.get('/', (req, res, next) => {
 
 });
 
+router.get('/Inserir', (req, res, next) => {
+
+    let request = new mssql.Request();
+    request.execute("INSERT INTO USUARIO", (err) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.status(200).send(true);
+    });
+
+});
+
 module.exports = router;
