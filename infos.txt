@@ -1,0 +1,5 @@
+anotações;
+
+trocar todas as letras maiusculas por minusculas no web
+
+metodo de casastrar não é mais no endpoint de usuario e sim n ode cliente

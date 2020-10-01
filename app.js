@@ -25,9 +25,11 @@ app.use((req, res, next) => {
 
 //routes
 const rotaUsuarios = require('./routes/usuarios');
-app.use('/usuarios', rotaUsuarios);
+app.use('/usuario', rotaUsuarios);
 const rotaClientes = require('./routes/clientes');
-app.use('/clientes', rotaClientes);
+app.use('/cliente', rotaClientes);
+const rotaAvaliacoes = require('./routes/avaliacoes');
+app.use('/avalidacao', rotaAvaliacoes);
 
 app.use((req, res, next) => {
     const erro = new Error('Não encontrado');
