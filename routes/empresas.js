@@ -5,35 +5,35 @@ const request = new mssql.Request();
 
 router.get('/pesquisa/:empresa', (req, res) => {
     const params = req.params.empresa;
-    const sql = '';
-    let retrono = query(sql);
+    const sql = `select * from usuario, empresa where usuario.username like'%${params}%' and usuario.idusuario = empresa.idusuario`;
+    let retorno = query(sql);
     return res.status(200).send(retorno);
 });
 
 router.get('/get/id/:idempresa', (req, res) => {
     const params = req.params.idempresa;
-    const sql = '';
-    let retrono = query(sql);
+    const sql = `SELECT * FROM USUARIO, EMPRESA WHERE EMPRESA.IDEMPRESA = ${params} AND USUARIO.IDUSUARIO = EMPRESA.IDUSUARIO`;
+    let retorno = query(sql);
     return res.status(200).send(retorno[0]);
 });
 
 router.get('/get/id/user/:userid', (req, res) => {
     const params = req.params.userid;
-    const sql = '';
-    let retrono = query(sql);
+    const sql = `SELECT * FROM USUARIO, EMPRESA WHERE USUARIO.IDUSUARIO = ${params} AND USUARIO.IDUSUARIO = EMPRESA.IDUSUARIO`;
+    let retorno = query(sql);
     return res.status(200).send(retorno[0]);
 });
 
 router.get('/get/nome/:nome', (req, res) => {
     const params = req.params.nome;
-    const sql = '';
-    let retrono = query(sql);
+    const sql = `SELECT * FROM USUARIO, EMPRESA WHERE USUARIO.USERNAME = '${params}' AND USUARIO.IDUSUARIO = EMPRESA.IDUSUARIO`;
+    let retorno = query(sql);
     return res.status(200).send(retorno[0]);
 });
 
 router.get('/listar', (req, res) => {
-    const sql = '';
-    let retrono = query(sql);
+    const sql = 'SELECT * FROM USUARIO, EMPRESA WHERE USUARIO.IDUSUARIO = EMPRESA.IDUSUARIO';
+    let retorno = query(sql);
     return res.status(200).send(retorno);
 });
 
