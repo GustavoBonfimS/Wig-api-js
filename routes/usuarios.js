@@ -1,31 +1,33 @@
-const express = require('express');
-const router = express.Router();
+const Router = require('express-promise-router');
+
+const router = new Router();
 const mssql = require('../database/mssql');
 
-router.post('/inserir', (req, res, next) => {
+router.post('/inserir', async(req, res) => {
     let user = req.body;
     let sql = `INSERT INTO USUARIO(USERNAME, SENHA, EMAIL, PERFIL, LOGADO)` +
         `VALUES ('${user.login}', '${user.senha}', '${user.email}', '${user.perfil}', 0`;
-    let retorno = mssql.query(sql);
-    return res.status(200).send(retorno);
+    await mssql.query(sql).then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err));
 });
 
-router.get('/get/:login', (req, res, next) => {
+router.get('/get/:login', async (req, res) => {
     let sql = `SELECT * FROM USUARIO WHERE USERNAME = '${req.params.login}'`;
-    let retorno = mssql.query(sql);
-    return res.status(200).send(retorno);
+    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+        .catch(err => res.status(500).send(err));
 });
 
-router.get('/get/id/:iduser', (req, res, next) => {
+router.get('/get/id/:iduser', async (req, res) => {
     let sql = `SELECT * FROM USUARIO WHERE IDUSUARIO = ${req.params.iduser}`;
-    let retorno = mssql.query(sql);
-    return res.status(200).send(retorno);
+    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+        .catch(err => res.status(500).send(err));
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const body = req.body;
     let sql = `SELECT * FROM USUARIO WHERE USERNAME = '${body.login}' AND SENHA = '${body.senha}'`;
-    let retorno = mssql.query(sql);
+    let retorno = null;
+    await mssql.query(sql).then(result => retorno = result).catch(err => res.send(err));
 
     if (retorno[0] === undefined || retorno[0] === null) {
         return res.send(null);
@@ -34,35 +36,35 @@ router.post('/login', (req, res) => {
     switch (retorno[0].perfil) {
         case 'cliente':
             sql = `SELECT * FROM USUARIO, CLIENTE WHERE usuario.username = '${retorno[0].login}' and usuario.idusuario = cliente.idusuario`;
-            retorno = mssql.query(sql);
+            await mssql.query(sql).then(result => retorno = result).catch(err => res.send(err));
             break;
         case 'empresa':
             sql = `SELECT * FROM USUARIO, EMPRESA WHERE usuario.username = '${retorno[0].login}' and ususuario.idusuario = empresa.idusuario`;
-            retorno = mssql.query(sql);
-            break;            
+            await mssql.query(sql).then(result => retorno = result).catch(err => res.send(err));
+            break;
     }
 
-    return res.status(200).send(retorno[0]);
+    res.status(200).send(retorno[0]);
 });
 
-router.get('/logout/:idusuario', (req, res, next) => {
+router.get('/logout/:idusuario', async (req, res) => {
     const params = req.params.idusuario;
     let sql = `UPDATE USUARIO SET LOGADO = 0 WHERE IDUSUARIO = ${params.idusuario}`;
-    let retorno = mssql.query(sql);
-    return res.status(200).send(retorno[0]);
+    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+        .catch(err => res.status(500).send(err));
 });
 
-router.get('/verifylogin/:idusuario', (req, res, next) => {
+router.get('/verifylogin/:idusuario', async (req, res) => {
     const params = req.params.idusuario;
     let sql = `SELECT LOGADO FROM USUARIO WHERE IDUSUARIO = ${params.idusuario}`;
-    let retorno = mssql.query(sql);
-    return res.status(200).send(retorno[0]);
+    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+        .catch(err => res.status(500).send(err));
 });
 
-router.get('/list', (req, res, next) => {
+router.get('/list', async (req, res) => {
     let sql = `SELECT * FROM USUARIO`;
-    let retorno = mssql.query(sql);
-    return res.status(200).send(retorno);
+    await mssql.query(sql).then(result => res.status(200).send(result))
+        .catch(err => res.status(500).send(err));
 });
 
 module.exports = router;

@@ -10,14 +10,15 @@ mssql.connect(config, (err) => {
     if (err) throw new Error(err);
 });
 
-exports.query = function (sql) {{
-    const request = new mssql.Request();
-    request.query(sql, (err, result) => {
-        if (err) {
-            console.log(err);
-            return new Error(err);
-        }
-        console.log(result.recordset);
-        return result.recordset;
+exports.query = function (sql) {
+    return new Promise((resolve, reject) => {
+        const request = new mssql.Request();
+        request.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result.recordset);
+            }
+        }); 
     });
-}};
+};
