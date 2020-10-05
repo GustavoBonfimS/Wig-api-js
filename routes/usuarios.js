@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mssql = require('./database/mssql');
+const mssql = require('../database/mssql');
 
 router.post('/inserir', (req, res, next) => {
     let user = req.body;

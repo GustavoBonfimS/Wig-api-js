@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mssql = require('./database/mssql');
+const mssql = require('../database/mssql');
 
 router.get('/get/:login', (req, res, next) => {
     const params = req.params.login;
