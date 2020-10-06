@@ -1,5 +1,4 @@
 const Router = require('express-promise-router');
-
 const router = new Router();
 const mssql = require('../database/mssql');
 
@@ -13,13 +12,13 @@ router.post('/inserir', async(req, res) => {
 
 router.get('/get/:login', async (req, res) => {
     let sql = `SELECT * FROM USUARIO WHERE USERNAME = '${req.params.login}'`;
-    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? "null" : result[0]))
         .catch(err => res.status(500).send(err));
 });
 
 router.get('/get/id/:iduser', async (req, res) => {
     let sql = `SELECT * FROM USUARIO WHERE IDUSUARIO = ${req.params.iduser}`;
-    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? "null" : result[0]))
         .catch(err => res.status(500).send(err));
 });
 
@@ -44,20 +43,20 @@ router.post('/login', async (req, res) => {
             break;
     }
 
-    res.status(200).send(retorno[0]);
+    res.status(200).send(!result[0] ? "null" : result[0]);
 });
 
 router.get('/logout/:idusuario', async (req, res) => {
     const params = req.params.idusuario;
     let sql = `UPDATE USUARIO SET LOGADO = 0 WHERE IDUSUARIO = ${params.idusuario}`;
-    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? "null" : result[0]))
         .catch(err => res.status(500).send(err));
 });
 
 router.get('/verifylogin/:idusuario', async (req, res) => {
     const params = req.params.idusuario;
     let sql = `SELECT LOGADO FROM USUARIO WHERE IDUSUARIO = ${params.idusuario}`;
-    await mssql.query(sql).then(result => res.status(200).send(result[0]))
+    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? "null" : result[0]))
         .catch(err => res.status(500).send(err));
 });
 
