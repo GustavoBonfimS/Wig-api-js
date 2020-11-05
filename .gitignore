@@ -2,7 +2,8 @@ node_modules/
 
 ## mssql no vscode gera logs de consulta indesejados
 *.log
-*.txt
+
+*/infos.txt
 
 *.sql
 test.http

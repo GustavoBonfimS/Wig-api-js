@@ -1,0 +1,56 @@
+--CREATE DATABASE wig;
+
+use wig;
+
+CREATE TABLE usuario(
+    idusuario int identity not null,
+    username varchar(30) not null,
+    senha varchar(20) not null,
+    email varchar(50) not null,
+    perfil varchar(20) not null,
+    logado bit not null,
+    CONSTRAINT usuario_pk primary key (idusuario)
+);
+
+CREATE TABLE cliente(
+    idcliente int IDENTITY not null,
+    cpf varchar(20) not null,
+    idusuario int not null,
+    constraint cliente_pk primary key (idcliente),
+    CONSTRAINT cliente_usuario_fk foreign key (idusuario) REFERENCES usuario(idusuario)
+);
+
+CREATE TABLE empresa (
+    idempresa int identity not null,
+    cnpj varchar(20) not null,
+    idusuario int not null,
+    CONSTRAINT empresa_pk primary key (idempresa),
+    constraint empresa_usuario_fk foreign key (idusuario) REFERENCES usuario(idusuario)
+);
+
+CREATE TABLE avaliacao (
+    idavaliacao int identity not null,
+    idcliente int not null,
+    idempresa int not null,
+    autor varchar(30) not null,
+    conteudo varchar(200) not null,
+    data date not null,
+    hora time not null,
+    constraint avaliacao_pk primary key (idavaliacao),
+    constraint avaliacao_cliente_fk foreign key (idcliente) REFERENCES cliente(idcliente),
+    constraint avaliacao_empresa_fk foreign key (idempresa) REFERENCES empresa(idempresa)
+);
+
+CREATE TABLE resposta (
+    idresposta int identity not null,
+    idavaliacao int not null,
+    idempresa int not null,
+    idcliente int not null,
+    autor varchar(30) not null,
+    conteudo varchar(200) not null,
+    data date not null,
+    hora time not null,
+    constraint resposta_pk primary key (idresposta),
+    constraint resposta_cliente_fk foreign key (idcliente) REFERENCES cliente(idcliente),
+    constraint resposta_empresa_fk foreign key (idempresa) REFERENCES empresa(idempresa)
+);
