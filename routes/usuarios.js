@@ -5,7 +5,7 @@ const mssql = require('../database/mssql');
 router.post('/inserir', async(req, res) => {
     let user = req.body;
     let sql = `INSERT INTO USUARIO(USERNAME, SENHA, EMAIL, PERFIL, LOGADO)` +
-        `VALUES ('${user.login}', '${user.senha}', '${user.email}', '${user.perfil}', 0`;
+        `VALUES ('${user.login}', '${user.senha}', '${user.email}', '${user.perfil}', 0)`;
     await mssql.query(sql).then(result => res.status(200).send(result))
         .catch(err => res.status(500).send(err));
 });

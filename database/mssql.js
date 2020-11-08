@@ -1,9 +1,9 @@
 const mssql = require('mssql');
 const config = {
-    user: 'sa',
-    password: 'toledo',
+    user: process.env.MSSQL_USER,
+    password: process.env.MSSQL_PASSWORD,
     server: 'localhost',
-    database: 'WIG'
+    database: 'wig'
 };
 
 mssql.connect(config, (err) => {
