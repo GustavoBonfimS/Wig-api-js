@@ -9,9 +9,9 @@ io.on('connection', (socket) => {
 
   io.emit('newNotification', {
     autor: 'teste',
-    conteudo: 'contueod teste'
+    conteudo: 'contueod teste',
   });
-})
+});
 
 server.listen(port, () => {
   console.log(`API listening at http://localhost:${port}`);

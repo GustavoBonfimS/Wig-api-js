@@ -3,44 +3,64 @@ const router = express.Router();
 const mssql = require('../database/mssql');
 
 router.get('/get/:login', async (req, res) => {
-    const params = req.params.login;
-    const sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.USERNAME = '${params}' AND USUARIO.IDUSUARIO = CLIENTE.IDUSUARIO`;
-    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? 'null' : result[0]))
-        .catch(err => res.status(500).send(err));
+  const params = req.params.login;
+  const sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.USERNAME = '${params}' AND USUARIO.IDUSUARIO = CLIENTE.IDUSUARIO`;
+  await mssql
+    .query(sql)
+    .then((result) => res.status(200).send(!result[0] ? 'null' : result[0]))
+    .catch((err) => res.status(500).send(err));
 });
 
 router.post('/cadastrar', async (req, res) => {
-    const body = req.body;
-    let success = false;
-    let sql = `INSERT INTO USUARIO(USERNAME, SENHA, EMAIL, PERFIL, LOGADO)` +
-        `VALUES ('${body.login}', '${body.senha}', '${body.email}', '${body.perfil}', 0)`;
-    await mssql.query(sql).then(() => success = true)
-        .catch(err => {
-            return res.status(500).send(err);
-        });
+  const body = req.body;
+  let sql =
+    `INSERT INTO USUARIO(USERNAME, SENHA, EMAIL, PERFIL, LOGADO)` +
+    `VALUES ('${body.login}', '${body.senha}', '${body.email}', '${body.perfil}', 0)`;
+  await mssql
+    .query(sql)
+    .then(() => {})
+    .catch((err) => {
+      return res.status(500).send(err);
+    });
 
-    sql = `INSERT INTO CLIENTE VALUES ((SELECT IDUSUARIO FROM USUARIO WHERE USERNAME = '${body.login}'), '${body.cpf})'`;
-    await mssql.query(sql).then(result => success = true)
-        .catch(err => res.status(500).send(err));
+  sql = `INSERT INTO CLIENTE VALUES ((SELECT IDUSUARIO FROM USUARIO WHERE USERNAME = '${body.login}'), '${body.cpf})'`;
+  await mssql
+    .query(sql)
+    .then(() => {})
+    .catch((err) => {
+      return res.status(500).send(err);
+    });
+
+  sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.USERNAME = ${body.login}`;
+  await mssql.query(sql).then((result) => {
+    res.status(200).send(!result[0] ? 'null' : result[0]);
+  });
 });
 
 router.get('/get/id/user/:userid', async (req, res) => {
-    let params = req.params.userid;
-    let sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.IDUSUARIO = ${params} AND USUARIO.IDUSUARIO = CLIENTE.IDUSUARIO`;
-    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? 'null' : result[0]))
-        .catch(err => res.status(500).send(err));
+  let params = req.params.userid;
+  let sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.IDUSUARIO = ${params} AND USUARIO.IDUSUARIO = CLIENTE.IDUSUARIO`;
+  await mssql
+    .query(sql)
+    .then((result) => res.status(200).send(!result[0] ? 'null' : result[0]))
+    .catch((err) => res.status(500).send(err));
 });
 
 router.put('/forget', async (req, res) => {
-    const body = req.body;
-    let sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.EMAIL = '${body.email}'`;
-    await mssql.query(sql).then(result => {
-        if (!result[0]) {
-            return res.status(500).send('null');
-        }
-        sql = `UPDATE USUARIO SET SENHA = '${body.senha}' WHERE EMAIL = '${body.email}'`;
-        mssql.query(sql).then(resultado => res.status(200).send(resultado));
-    }).catch(err => res.status(500).send(err));
+  const body = req.body;
+  let sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.EMAIL = '${body.email}'`;
+  await mssql
+    .query(sql)
+    .then((result) => {
+      if (!result[0]) {
+        return res.status(500).send('null');
+      }
+      sql = `UPDATE USUARIO SET SENHA = '${body.senha}' WHERE EMAIL = '${body.email}'`;
+      mssql.query(sql).then();
+      sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.EMAIL = '${body.email}'`;
+      mssql.query(sql).then(result => res.status(200).send(result[0]));
+    })
+    .catch((err) => res.status(500).send(err));
 });
 
 module.exports = router;
