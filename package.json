@@ -24,6 +24,10 @@
     "express-promise-router": "^4.0.1",
     "morgan": "^1.10.0",
     "mssql": "^6.2.2",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "socket.io": "^3.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.14.0"
   }
 }
