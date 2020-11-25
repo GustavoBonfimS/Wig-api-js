@@ -18,23 +18,18 @@ router.post('/cadastrar', async (req, res) => {
     `VALUES ('${body.login}', '${body.senha}', '${body.email}', '${body.perfil}', 0)`;
   await mssql
     .query(sql)
-    .then(() => {})
+    .then(() => {
+      sql = `INSERT INTO CLIENTE(IDUSUARIO, CPF) VALUES ((SELECT IDUSUARIO FROM USUARIO WHERE USERNAME = '${body.login}'), '${body.CPF}')`;
+      mssql.query(sql).then(() => {
+        sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.USERNAME = '${body.login}'`;
+        mssql.query(sql).then((result) => {
+          return res.status(200).send(!result[0] ? 'null' : result[0]);
+        });
+      });
+    })
     .catch((err) => {
       return res.status(500).send(err);
     });
-
-  sql = `INSERT INTO CLIENTE VALUES ((SELECT IDUSUARIO FROM USUARIO WHERE USERNAME = '${body.login}'), '${body.cpf})'`;
-  await mssql
-    .query(sql)
-    .then(() => {})
-    .catch((err) => {
-      return res.status(500).send(err);
-    });
-
-  sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.USERNAME = ${body.login}`;
-  await mssql.query(sql).then((result) => {
-    res.status(200).send(!result[0] ? 'null' : result[0]);
-  });
 });
 
 router.get('/get/id/user/:userid', async (req, res) => {
@@ -58,7 +53,7 @@ router.put('/forget', async (req, res) => {
       sql = `UPDATE USUARIO SET SENHA = '${body.senha}' WHERE EMAIL = '${body.email}'`;
       mssql.query(sql).then();
       sql = `SELECT * FROM USUARIO, CLIENTE WHERE USUARIO.EMAIL = '${body.email}'`;
-      mssql.query(sql).then(result => res.status(200).send(result[0]));
+      mssql.query(sql).then((result) => res.status(200).send(result[0]));
     })
     .catch((err) => res.status(500).send(err));
 });
