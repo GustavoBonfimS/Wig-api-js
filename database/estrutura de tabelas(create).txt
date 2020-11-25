@@ -4,7 +4,7 @@ use wig;
 
 CREATE TABLE usuario(
     idusuario int identity not null,
-    username varchar(30) not null,
+    login varchar(30) not null,
     senha varchar(20) not null,
     email varchar(50) not null,
     perfil varchar(20) not null,
@@ -23,6 +23,8 @@ CREATE TABLE cliente(
 CREATE TABLE empresa (
     idempresa int identity not null,
     cnpj varchar(20) not null,
+    tpo varchar(20) not null,
+    endereco varchar(100) not null,
     idusuario int not null,
     CONSTRAINT empresa_pk primary key (idempresa),
     constraint empresa_usuario_fk foreign key (idusuario) REFERENCES usuario(idusuario)

@@ -4,7 +4,7 @@ const mssql = require('../database/mssql');
 
 router.get('/pesquisa/:empresa', async (req, res) => {
   const params = req.params.empresa;
-  const sql = `select * from usuario, empresa where usuario.username like'%${params}%' and usuario.idusuario = empresa.idusuario`;
+  const sql = `select * from usuario, empresa where usuario.login like'%${params}%' and usuario.idusuario = empresa.idusuario`;
   await mssql
     .query(sql)
     .then((result) => res.status(200).send(!result[0] ? 'null' : result[0]))
@@ -31,10 +31,12 @@ router.get('/get/id/user/:userid', async (req, res) => {
 
 router.get('/get/nome/:nome', async (req, res) => {
   const params = req.params.nome;
-  const sql = `SELECT * FROM USUARIO, EMPRESA WHERE USUARIO.USERNAME = '${params}' AND USUARIO.IDUSUARIO = EMPRESA.IDUSUARIO`;
+  const sql = `SELECT * FROM USUARIO, EMPRESA WHERE USUARIO.login = '${params}' AND USUARIO.IDUSUARIO = EMPRESA.IDUSUARIO`;
   await mssql
     .query(sql)
-    .then((result) => res.status(200).send(!result[0] ? 'null' : result[0]))
+    .then((result) => {
+      res.status(200).send(!result[0] ? 'null' : result[0]);
+    })
     .catch((err) => res.status(500).send(err));
 });
 
