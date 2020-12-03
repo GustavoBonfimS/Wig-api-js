@@ -1,6 +1,8 @@
 const Router = require('express-promise-router');
 const router = new Router();
 const mssql = require('../database/mssql');
+const EventEmitter = require('events').EventEmitter;
+const emitter = new EventEmitter();
 
 router.get('/listar', async (req, res) => {
     const sql = `SELECT * FROM AVALIACAO`;
@@ -27,11 +29,17 @@ router.post('/responder', async (req, res) => {
     const date = new Date();
     const dataAtual = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
     const horaAtual = date.toLocaleTimeString();
-    let sql = `INSERT INTO RESPOSTA VALUES (${body.idavaliacao}, ${body.idempresa}, ${body.idcliente}, '${dataAtual}', '${horaAtual}', '${body.autor}', '${body.conteudo}')`;
+    let sql = `INSERT INTO RESPOSTA VALUES (${body.idavaliacao}, ${body.idempresa}, ${body.idcliente}, '${body.autor}', '${body.conteudo}', '${dataAtual}', '${horaAtual}')`;
     await mssql.query(sql).then(() => {
-        sql = `SELECT * FROM RESPOSTA WHERE DATA = ${dataAtual} AND HORA = ${horaAtual}`;
-        mssql.query(sql).then(result => res.status(200).send(result[0]));
-    }).catch(err => res.status(500).send(err));
+        sql = `SELECT * FROM RESPOSTA WHERE DATA = '${dataAtual}' AND HORA = '${horaAtual}'`;
+        mssql.query(sql).then(result => {
+            emitter.emit('newAnswer', result[0]);
+            res.status(200).send(result[0]);
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send(err);
+    });
 });
 
 router.get('/get/:conteudo', async (req, res) => {
@@ -90,4 +98,5 @@ router.delete('/delete/:idavaliacao', async (req, res) => {
         .catch(err => res.status(500).send(err));
 });
 
-module.exports = router;
+exports.emitter = emitter;
+exports.router = router;

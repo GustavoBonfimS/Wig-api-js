@@ -7,7 +7,7 @@ router.get('/pesquisa/:empresa', async (req, res) => {
   const sql = `select * from usuario, empresa where usuario.login like'%${params}%' and usuario.idusuario = empresa.idusuario`;
   await mssql
     .query(sql)
-    .then((result) => res.status(200).send(!result[0] ? 'null' : result[0]))
+    .then((result) => res.status(200).send(!result[0] ? 'null' : result))
     .catch((err) => res.status(500).send(err));
 });
 

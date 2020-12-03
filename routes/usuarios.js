@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
             }).catch(err => res.send(err));
             break;
         case 'empresa':
-            sql = `SELECT * FROM USUARIO, EMPRESA WHERE usuario.login = '${retorno[0].login}' and ususuario.idusuario = empresa.idusuario`;
+            sql = `SELECT * FROM USUARIO, EMPRESA WHERE usuario.login = '${retorno[0].login}' and usuario.idusuario = empresa.idusuario`;
             await mssql.query(sql).then(result => {
                 retorno = result;
             }).catch(err => res.send(err));

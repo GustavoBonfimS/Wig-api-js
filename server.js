@@ -2,14 +2,19 @@ const http = require('http');
 const app = require('./app');
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
+const emitter = require('./routes/avaliacoes').emitter;
 
 io.on('connection', (socket) => {
   console.log(`connected!, hello ${socket.id}`);
 
-  io.emit('newNotification', {
-    autor: 'teste',
-    conteudo: 'contueod teste',
+  emitter.on('newAnswer', (av) => {
+    console.log(av);
+    io.emit('newNotification', av);
   });
 });
 

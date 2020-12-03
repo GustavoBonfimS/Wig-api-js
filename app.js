@@ -14,7 +14,7 @@ const rotaUsuarios = require('./routes/usuarios');
 app.use('/usuario', rotaUsuarios);
 const rotaClientes = require('./routes/clientes');
 app.use('/cliente', rotaClientes);
-const rotaAvaliacoes = require('./routes/avaliacoes');
+const rotaAvaliacoes = require('./routes/avaliacoes').router;
 app.use('/avaliacao', rotaAvaliacoes);
 const rotaEmpresa = require('./routes/empresas');
 app.use('/empresa', rotaEmpresa);

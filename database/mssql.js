@@ -19,6 +19,6 @@ exports.query = function (sql) {
             } else {
                 resolve(result.recordset);
             }
-        }); 
+        });
     });
 };
