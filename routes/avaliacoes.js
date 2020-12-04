@@ -94,8 +94,10 @@ router.get('/resposta/listar/cliente/:idcliente', async (req, res) => {
 router.delete('/delete/:idavaliacao', async (req, res) => {
     const params = req.params.idavaliacao;
     let sql = `DELETE FROM AVALIACAO WHERE IDAVALIACAO = ${params}`;
-    await mssql.query(sql).then(() => res.status(200).send(true))
-        .catch(err => res.status(500).send(err));
+    await mssql.query(sql).then(() => {
+        sql = `DELETE FROM RESPOSTA WHERE IDAVALIACAO = ${params}`;
+        mssql.query(sql).then(() => res.status(200).send(true));
+    }).catch(err => res.status(500).send(err));
 });
 
 exports.emitter = emitter;
