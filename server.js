@@ -11,6 +11,7 @@ const emitter = require('./routes/avaliacoes').emitter;
 
 io.on('connection', (socket) => {
   console.log(`connected!, hello ${socket.id}`);
+  console.log(socket.handshake.query['idCliente']);
 
   emitter.on('newAnswer', (av) => {
     console.log(av);

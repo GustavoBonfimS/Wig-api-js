@@ -17,9 +17,27 @@ router.get('/get/:login', async (req, res) => {
 });
 
 router.get('/get/id/:iduser', async (req, res) => {
+    let retorno = null;
     let sql = `SELECT * FROM USUARIO WHERE IDUSUARIO = ${req.params.iduser}`;
-    await mssql.query(sql).then(result => res.status(200).send(!result[0] ? 'null' : result[0]))
+    await mssql.query(sql).then(result => retorno = result)
         .catch(err => res.status(500).send(err));
+
+    switch (retorno[0].perfil) {
+        case 'cliente':
+            sql = `SELECT * FROM USUARIO, CLIENTE WHERE usuario.login = '${retorno[0].login}' and usuario.idusuario = cliente.idusuario`;
+            await mssql.query(sql).then(result => {
+                retorno = result;
+            }).catch(err => res.send(err));
+            break;
+        case 'empresa':
+            sql = `SELECT * FROM USUARIO, EMPRESA WHERE usuario.login = '${retorno[0].login}' and usuario.idusuario = empresa.idusuario`;
+            await mssql.query(sql).then(result => {
+                retorno = result;
+            }).catch(err => res.send(err));
+            break;
+    }
+
+    res.status(200).send(!retorno[0] ? 'null' : retorno[0]);
 });
 
 router.post('/login', async (req, res) => {
