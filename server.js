@@ -10,12 +10,12 @@ const io = require('socket.io')(server, {
 const emitter = require('./routes/avaliacoes').emitter;
 
 io.on('connection', (socket) => {
-  console.log(`connected!, hello ${socket.id}`);
-  console.log(socket.handshake.query['idCliente']);
+  console.log(`connected!, socket id: ${socket.id}`);
 
   emitter.on('newAnswer', (av) => {
-    console.log(av);
-    io.emit('newNotification', av);
+    if (av.idcliente == socket.handshake.query['idCliente']) {
+      io.emit('newNotification', av);
+    }
   });
 });
 
